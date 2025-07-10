@@ -1,13 +1,20 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
-export class Deuda {
+export class Deudas {
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Column()
+    name: string;
 
     @Column('float')
     amount: number;
 
     @Column()
     description: string;
+
+   /*  @Column()
+    date: Date;
+     */
 }

@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { DeudasController } from './deudas.controller';
 import { DeudasService } from './deudas.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Deuda } from './deudas.entity';
+import { Deudas } from './deudas.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Deuda])],
+  imports: [TypeOrmModule.forFeature([Deudas])],
   controllers: [DeudasController],
   providers: [DeudasService]
 })

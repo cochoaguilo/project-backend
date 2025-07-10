@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Deuda } from './deudas.entity';
+import { Deudas } from './deudas.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeudaDto } from './deudas.dto';
@@ -7,8 +7,8 @@ import { CreateDeudaDto } from './deudas.dto';
 @Injectable()
 export class DeudasService {
     constructor(
-        @InjectRepository(Deuda)
-        private deudasRepository: Repository<Deuda>,
+        @InjectRepository(Deudas)
+        private deudasRepository: Repository<Deudas>,
     ) {}
 
     create(createDeudaDto: CreateDeudaDto) {
@@ -16,7 +16,7 @@ export class DeudasService {
         return this.deudasRepository.save(deuda);
     }
 
-    findAll() {
+    findAll(): Promise<Deudas[]> {
         return this.deudasRepository.find();
     }
 
