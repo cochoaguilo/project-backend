@@ -4,9 +4,12 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AhorrosModule } from './ahorros/ahorros.module';
 import { DeudasModule } from './deudas/deudas.module';
+import { UsuariosModule } from './usuarios/usuarios.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'mssql',
       host: 'localhost',
@@ -22,6 +25,7 @@ import { DeudasModule } from './deudas/deudas.module';
     }),
     AhorrosModule,
     DeudasModule,
+    UsuariosModule
   ],
   controllers: [],
   providers: [AppService],
