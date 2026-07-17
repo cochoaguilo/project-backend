@@ -18,7 +18,7 @@ export class UsuariosService {
     return this.usuariosRepository.save(usuario);
   }
 
-  async logIn(loginUsuarioDto: LoginUsuarioDto): Promise<{ user: LoginUsuarioDto, access_token: string, expires_in: number }> {
+  async logIn(loginUsuarioDto: LoginUsuarioDto): Promise<{ user: { id: number } & LoginUsuarioDto, access_token: string, expires_in: number }> {
     const usuario = await this.usuariosRepository.findOneBy({
       mail: loginUsuarioDto.mail,
       password: loginUsuarioDto.password,
@@ -27,11 +27,11 @@ export class UsuariosService {
     if (!usuario) {
       throw new NotFoundException('Mail o contraseña incorrectos');
     }
-    const expiresIn = 120; // segundos, igual que tu configuración en JwtModule
+    const expiresIn = 60000; // segundos, igual que tu configuración en JwtModule
     const payload = { sub: usuario?.id, username: usuario?.name };
     return {
-      user: loginUsuarioDto,
-      access_token: await this.jwtService.signAsync(payload),
+      user: { ...loginUsuarioDto, id: usuario?.id },
+      access_token: await this.jwtService.signAsync(payload, { expiresIn }),
       expires_in: expiresIn
     };
   }

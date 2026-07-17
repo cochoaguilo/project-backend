@@ -11,23 +11,32 @@ export class DeudasService {
         private deudasRepository: Repository<Deudas>,
     ) {}
 
-    create(createDeudaDto: CreateDeudaDto) {
+    create(createDeudaDto: CreateDeudaDto & { userId: number }) {
         const deuda = this.deudasRepository.create(createDeudaDto);
         return this.deudasRepository.save(deuda);
     }
 
-    findAll(): Promise<Deudas[]> {
-        return this.deudasRepository.find();
+    findAll(userId: number): Promise<Deudas[]> {
+        return this.deudasRepository.find({ where: { userId } });
     }
 
     findOne(id: number) {
         return this.deudasRepository.findOneBy({ id });
     }
 
-    /* async update(id: number, updateDeudaDto: UpdateDeudaDto) {
-        await this.deudasRepository.update(id, updateDeudaDto);
-        return this.findOne(id);
-    } */
+    async update(id: number, updateDeudaDto: any): Promise<Deudas> {
+        const result = await this.deudasRepository.update(id, updateDeudaDto);
+        return result.raw;
+    }
+
+    async getDeudasTotales(userId: number): Promise<number | null> {
+        console.log(userId);
+        
+        const result = await this.deudasRepository.sum('amount', {userId})
+        console.log(result);
+        
+        return result;
+    }
 
     remove(id: number) {
         return this.deudasRepository.delete(id);

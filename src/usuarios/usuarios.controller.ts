@@ -1,14 +1,16 @@
 import { Controller, Post, Body, Get, UnauthorizedException } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto, LoginUsuarioDto } from './usuarios.dto';
+import { buildSuccessResponse } from 'src/utils/api-response';
 
 @Controller('usuarios')
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
   @Post('sign-in')
-  signIn(@Body() createUsuarioDto: CreateUsuarioDto) {
-    return this.usuariosService.signIn(createUsuarioDto);
+  async signIn(@Body() createUsuarioDto: CreateUsuarioDto) {
+    const result = await this.usuariosService.signIn(createUsuarioDto);
+    return buildSuccessResponse(result);
   }
 
   @Post('log-in')
@@ -17,11 +19,12 @@ export class UsuariosController {
     if (!usuario) {
       throw new UnauthorizedException('Credenciales incorrectas');
     }
-    return usuario;
+    return buildSuccessResponse(usuario);
   }
 
   @Get()
-  findAll() {
-    return this.usuariosService.findAll();
+  async findAll() {
+    const result = await this.usuariosService.findAll();
+    return buildSuccessResponse(result);
   }
 }

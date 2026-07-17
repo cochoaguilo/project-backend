@@ -14,6 +14,9 @@ export class Deudas {
     @Column()
     description: string;
 
+    @Column()
+    userId: number;
+
    /*  @Column()
     date: Date;
      */

@@ -4,4 +4,5 @@ export class CreateAhorroDto {
     tipo: 'gasto' | 'ingreso';
     description?: string;
     quantity: number;
+    userId: number;
 }

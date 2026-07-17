@@ -11,12 +11,15 @@ export class Ahorros {
   @Column()
   quantity: number;
 
-  @Column()
+  @Column({ nullable: true })
   description?: string;
 
   @Column()
   type: string;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'date', nullable: true })
   date?: Date;
+
+  @Column()
+  userId: number;
 }

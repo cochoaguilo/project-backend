@@ -17,7 +17,7 @@ const jwtConstants = {
       useFactory: (configService: ConfigService) => ({
         global: true,
         secret: configService.get<string>('secretToken'),
-        signOptions: { expiresIn: '120s' },
+        signOptions: { expiresIn: '480s' },
       }),
     }),
   ],

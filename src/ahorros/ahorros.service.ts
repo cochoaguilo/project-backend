@@ -17,13 +17,26 @@ export class AhorrosService {
   }
 
 
-  create(createAhorroDto: CreateAhorroDto): Promise<Ahorros> {
+  create(createAhorroDto: CreateAhorroDto & { userId: number }): Promise<Ahorros> {
     const ahorro = this.ahorrosRepository.create(createAhorroDto);
     return this.ahorrosRepository.save(ahorro);
   }
   
-  findAll(): Promise<Ahorros[]> {
-    return this.ahorrosRepository.find();
+  findAll(userId: number): Promise<Ahorros[]> {
+    return this.ahorrosRepository.find({ where: { userId } });
+  }
+
+  async getAhorrosTotales(userId: number): Promise<number> {
+    const result = await this.ahorrosRepository
+    .createQueryBuilder('ahorros')
+    .select(`SUM(CASE WHEN ahorros.type = 'ingreso' THEN ahorros.quantity ELSE 0 END) - 
+       SUM(CASE WHEN ahorros.type = 'egreso' THEN ahorros.quantity ELSE 0 END)`,
+      'total',)
+    .where('ahorros.userId = :userId', { userId })
+    .getRawOne();
+
+    const total = Number(result.total);
+    return total;
   }
 
   /* findOne(id: number): Promise<Ahorros> {

@@ -1,6 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Put } from '@nestjs/common';
 import { DeudasService } from './deudas.service';
 import { CreateDeudaDto } from './deudas.dto';
+import { UserId } from 'src/utils/userdecorator';
+import { buildSuccessResponse } from 'src/utils/api-response';
+import { HttpResponse } from 'src/utils/httpresponse.interface';
 
 
 @Controller('deudas')
@@ -8,27 +11,42 @@ export class DeudasController {
      constructor(private readonly deudasService: DeudasService) {}
 
     @Post()
-    create(@Body() createDeudaDto: CreateDeudaDto) {
-        return this.deudasService.create(createDeudaDto);
+    async create(@Body() createDeudaDto: CreateDeudaDto, @UserId() userId: number): Promise<HttpResponse> {
+        const result = await this.deudasService.create({...createDeudaDto, userId});
+        return buildSuccessResponse(result);
     }
 
     @Get()
-    findAll() {
-        return this.deudasService.findAll();
+    async findAll(@UserId() userId: number): Promise<HttpResponse> {
+        const result = await this.deudasService.findAll(userId);
+        return buildSuccessResponse(result);
+    }
+
+    @Get('totales')
+    async getDeudasTotales(@UserId() userId: string): Promise<HttpResponse> {
+        console.log(userId);
+        
+        const result = await this.deudasService.getDeudasTotales(+userId);
+        return buildSuccessResponse(result);
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.deudasService.findOne(+id);
+    async findOne(@Param('id') id: string): Promise<HttpResponse> {
+        const result = await this.deudasService.findOne(+id);
+        return buildSuccessResponse(result);
     }
 
-    /* @Patch(':id')
-    update(@Param('id') id: string, @Body() updateDeudaDto: UpdateDeudaDto) {
-        return this.deudasService.update(+id, updateDeudaDto);
-    } */
+    
+
+    @Put(':id')
+    async update(@Param('id') id: string, @Body() updateDeudaDto: Partial<CreateDeudaDto>): Promise<HttpResponse> {
+        const result = await this.deudasService.update(+id, updateDeudaDto);
+        return buildSuccessResponse(result);
+    }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.deudasService.remove(+id);
+    async remove(@Param('id') id: string): Promise<HttpResponse> {
+        const result = await this.deudasService.remove(+id);
+        return buildSuccessResponse(result);
     }
 }
