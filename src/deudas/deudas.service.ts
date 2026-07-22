@@ -29,12 +29,8 @@ export class DeudasService {
         return result.raw;
     }
 
-    async getDeudasTotales(userId: number): Promise<number | null> {
-        console.log(userId);
-        
-        const result = await this.deudasRepository.sum('amount', {userId})
-        console.log(result);
-        
+    async getDeudasTotales(userId: number): Promise<number | null> {        
+        const result = await this.deudasRepository.sum('amount', {userId})        
         return result;
     }
 

@@ -10,14 +10,13 @@ import {
 import { InversionesService } from './inversiones.service';
 import { CreateInversionesDto } from './create-inversiones.dto';
 import { UserId } from 'src/utils/userdecorator';
-import { HttpService } from '@nestjs/axios';
+
 import { buildSuccessResponse } from 'src/utils/api-response';
 
 @Controller('inversiones')
 export class InversionesController {
   constructor(
-    private readonly inversionesService: InversionesService,
-    private httpService: HttpService
+    private readonly inversionesService: InversionesService
   ) {}
 
   @Post()
@@ -35,13 +34,6 @@ export class InversionesController {
     return buildSuccessResponse(result);
   }
 
-  @Get('rava')
-  async getRava() {
-    const response = await this.httpService.axiosRef.get(
-    'https://mercado.rava.com/api/prices/arg'
-  );
-  return buildSuccessResponse(response.data?.datos);
-  }
 
   @Patch(':id')
   async update(

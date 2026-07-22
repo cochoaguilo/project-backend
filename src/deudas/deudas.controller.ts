@@ -23,9 +23,7 @@ export class DeudasController {
     }
 
     @Get('totales')
-    async getDeudasTotales(@UserId() userId: string): Promise<HttpResponse> {
-        console.log(userId);
-        
+    async getDeudasTotales(@UserId() userId: string): Promise<HttpResponse> {        
         const result = await this.deudasService.getDeudasTotales(+userId);
         return buildSuccessResponse(result);
     }

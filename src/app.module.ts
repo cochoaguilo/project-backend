@@ -14,6 +14,7 @@ import { InversionesController } from './inversiones/inversiones.controller';
 import { CriptoController } from './cripto/cripto.controller';
 import { DeudasController } from './deudas/deudas.controller';
 import { HttpExceptionFilter } from './common/http-exception.filter';
+import { ExternalsModule } from './externals/externals.module';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { HttpExceptionFilter } from './common/http-exception.filter';
     DeudasModule,
     UsuariosModule,
     CriptoModule,
-    InversionesModule
+    InversionesModule,
+    ExternalsModule
   ],
   controllers: [],
   providers: [
