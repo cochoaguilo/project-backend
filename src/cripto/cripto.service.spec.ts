@@ -3,7 +3,13 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { CriptoService } from './cripto.service';
 import { Cripto } from './entities/cripto.entity';
 
-type MockRepository<T = any> = Partial<Record<keyof any, jest.Mock>>;
+type MockRepository = {
+  create: jest.Mock;
+  save: jest.Mock;
+  find: jest.Mock;
+  update: jest.Mock;
+  delete: jest.Mock;
+};
 
 const mockRepository = (): MockRepository => ({
   create: jest.fn(),

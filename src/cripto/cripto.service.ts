@@ -31,7 +31,7 @@ export class CriptoService {
     await this.criptoRepository.update(id, updateCriptoDto)
   }
 
-  async remove(id: number): Promise<void> {
-    await this.criptoRepository.delete(id);
+  async remove(id: number) {
+    return this.criptoRepository.delete(id);
   }
 }

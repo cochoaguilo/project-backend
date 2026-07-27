@@ -3,7 +3,15 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { DeudasService } from './deudas.service';
 import { Deudas } from './deudas.entity';
 
-type MockRepository<T = any> = Partial<Record<keyof any, jest.Mock>>;
+type MockRepository = {
+  create: jest.Mock;
+  save: jest.Mock;
+  find: jest.Mock;
+  findOneBy: jest.Mock;
+  update: jest.Mock;
+  sum: jest.Mock;
+  delete: jest.Mock;
+};
 
 const mockRepository = (): MockRepository => ({
   create: jest.fn(),

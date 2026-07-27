@@ -24,7 +24,7 @@ export class InversionesService {
     await this.inversionesRepository.update(id, updateInversionesDto);
   }
 
-  async remove(id: number): Promise<void> {
-    await this.inversionesRepository.delete(id);
+  async remove(id: number) {
+    return this.inversionesRepository.delete(id);
   }
 }
