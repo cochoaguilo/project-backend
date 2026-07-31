@@ -43,8 +43,9 @@ export class AhorrosService {
     return this.ahorrosRepository.findOneBy({ id });
   } */
 
-  async update(id: number, updateAhorroDto: Partial<CreateAhorroDto>): Promise<void> {
+  async update(id: number, updateAhorroDto: Partial<CreateAhorroDto>): Promise<Ahorros | null> {
     await this.ahorrosRepository.update(id, updateAhorroDto);
+    return this.ahorrosRepository.findOneBy({ id });
   }
 
   async remove(id: number): Promise<void> {

@@ -20,8 +20,9 @@ export class InversionesService {
     return this.inversionesRepository.find({ where: { userId } });
   }
 
-  async update(id: number, updateInversionesDto: CreateInversionesDto): Promise<void> {
+  async update(id: number, updateInversionesDto: CreateInversionesDto): Promise<Inversiones | null> {
     await this.inversionesRepository.update(id, updateInversionesDto);
+    return this.inversionesRepository.findOneBy({ id });
   }
 
   async remove(id: number) {

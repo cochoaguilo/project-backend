@@ -27,8 +27,9 @@ export class CriptoService {
     return `This action returns a #${id} cripto`;
   } */
 
-  async update(id: number, updateCriptoDto: CreateCriptoDto): Promise<void> {
-    await this.criptoRepository.update(id, updateCriptoDto)
+  async update(id: number, updateCriptoDto: CreateCriptoDto): Promise<Cripto | null> {
+    await this.criptoRepository.update(id, updateCriptoDto);
+    return this.criptoRepository.findOneBy({ id });
   }
 
   async remove(id: number) {

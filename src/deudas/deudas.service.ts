@@ -24,9 +24,9 @@ export class DeudasService {
         return this.deudasRepository.findOneBy({ id });
     }
 
-    async update(id: number, updateDeudaDto: any): Promise<Deudas> {
-        const result = await this.deudasRepository.update(id, updateDeudaDto);
-        return result.raw;
+    async update(id: number, updateDeudaDto: any): Promise<Deudas | null> {
+        await this.deudasRepository.update(id, updateDeudaDto);
+        return this.deudasRepository.findOneBy({ id });
     }
 
     async getDeudasTotales(userId: number): Promise<number | null> {        

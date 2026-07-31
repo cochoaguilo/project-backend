@@ -5,9 +5,7 @@ import { UsuariosService } from './usuarios.service';
 import { UsuariosController } from './usuarios.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-const jwtConstants = {
-  secret: process.env,
-};
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([Usuarios]),
@@ -16,7 +14,7 @@ const jwtConstants = {
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         global: true,
-        secret: configService.get<string>('secretToken'),
+        secret: configService.get<string>('SECRET_TOKEN'),
         signOptions: { expiresIn: '480s' },
       }),
     }),
