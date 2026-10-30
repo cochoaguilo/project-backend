@@ -1,98 +1,176 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Wallet – Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST de la app de finanzas personales [Wallet](https://github.com/cochoaguilo/wallet), desarrollada con **NestJS** y **TypeORM**. Gestiona usuarios, ahorros, deudas e inversiones (cripto y acciones), y consulta cotizaciones en servicios externos.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Tecnologías
 
-## Description
+- NestJS 11 · TypeScript
+- TypeORM con MariaDB / MySQL (`mysql2`)
+- Autenticación con JWT (`@nestjs/jwt`)
+- `@nestjs/axios` para consumir APIs externas
+- Jest para tests, ESLint + Prettier
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Estructura
 
-## Project setup
-
-```bash
-$ npm install
+```
+src/
+├── main.ts                  # arranque de la app (CORS habilitado, puerto 3000 por defecto)
+├── app.module.ts            # conexión a la base, JWT y middleware de autenticación
+├── usuarios/                # registro e inicio de sesión
+├── ahorros/                 # ingresos y gastos
+├── deudas/                  # deudas
+├── inversiones/             # inversiones en acciones
+├── cripto/                  # inversiones en criptomonedas
+├── externals/               # cotizaciones: IOL, CoinGecko y dólar
+├── middleware/              # JwtAuthMiddleware
+├── common/                  # filtro global de excepciones
+└── utils/                   # respuesta estándar, decorador @UserId, auth de IOL
 ```
 
-## Compile and run the project
+## Variables de entorno
 
-```bash
-# development
-$ npm run start
+Se leen desde un archivo `.env` en la raíz del proyecto.
 
-# watch mode
-$ npm run start:dev
+| Variable                     | Descripción                                             | Por defecto  |
+| ---------------------------- | ------------------------------------------------------- | ------------ |
+| `PORT`                       | Puerto del servidor                                     | `3000`       |
+| `DB_TYPE`                    | Motor de base de datos (`mariadb` o `mysql`)            | `mariadb`    |
+| `DB_HOST`                    | Host de la base                                         | `localhost`  |
+| `DB_PORT`                    | Puerto de la base                                       | `3306`       |
+| `DB_USERNAME`                | Usuario de la base                                      | `root`       |
+| `DB_PASSWORD`                | Contraseña de la base                                   |              |
+| `DB_NAME`                    | Nombre de la base                                       | `wallet`     |
+| `DB_SYNCHRONIZE`             | `true` para que TypeORM cree/actualice las tablas       | `false`      |
+| `SECRET_TOKEN`               | Clave para firmar los JWT                               |              |
+| `IOL_USERNAME`               | Usuario de la API de InvertirOnline                     |              |
+| `IOL_PASSWORD`               | Contraseña de la API de InvertirOnline                  |              |
+| `TOKENMonedaApiMarcos`       | Token de la API de cotizaciones del dólar (monedapi.ar) |              |
 
-# production mode
-$ npm run start:prod
+Ejemplo:
+
+```env
+PORT=3000
+DB_TYPE=mariadb
+DB_HOST=localhost
+DB_PORT=3306
+DB_USERNAME=root
+DB_PASSWORD=tu_password
+DB_NAME=wallet
+DB_SYNCHRONIZE=true
+SECRET_TOKEN=una_clave_secreta
+IOL_USERNAME=tu_usuario_iol
+IOL_PASSWORD=tu_password_iol
+TOKENMonedaApiMarcos=tu_token_monedapi
 ```
 
-## Run tests
+## Modelo de datos
 
-```bash
-# unit tests
-$ npm run test
+| Entidad       | Campos                                                              |
+| ------------- | ------------------------------------------------------------------- |
+| `Usuarios`    | `id`, `name`, `mail` (único), `password`                            |
+| `Ahorros`     | `id`, `name`, `quantity`, `description`, `type`, `date`, `userId`   |
+| `Deudas`      | `id`, `name`, `amount`, `description`, `userId`                     |
+| `Inversiones` | `id`, `name`, `hold`, `platform`, `symbol`, `purchaseDate`, `userId` |
+| `Cripto`      | `id`, `name`, `hold`, `platform`, `symbol`, `purchaseDate`, `userId` |
 
-# e2e tests
-$ npm run test:e2e
+## Autenticación
 
-# test coverage
-$ npm run test:cov
+1. El usuario inicia sesión en `POST /usuarios/log-in` y recibe un `access_token`.
+2. Las rutas de `/ahorros`, `/deudas`, `/inversiones` y `/cripto` requieren el header:
+
+   ```
+   Authorization: Bearer <access_token>
+   ```
+
+3. El usuario sobre el que se opera se indica con el query param `?userId=<id>`.
+
+## Endpoints
+
+### Usuarios
+
+| Método | Ruta                | Descripción                                          |
+| ------ | ------------------- | ---------------------------------------------------- |
+| POST   | `/usuarios/sign-in` | Registra un usuario (`name`, `mail`, `password`)     |
+| POST   | `/usuarios/log-in`  | Inicia sesión (`mail`, `password`) y devuelve `user`, `access_token` y `expires_in` |
+| GET    | `/usuarios`         | Lista los usuarios                                   |
+
+### Ahorros 🔒
+
+| Método | Ruta                          | Descripción                                   |
+| ------ | ----------------------------- | --------------------------------------------- |
+| GET    | `/ahorros?userId=`            | Lista los movimientos del usuario             |
+| GET    | `/ahorros/totales?userId=`    | Saldo total (ingresos menos egresos)          |
+| POST   | `/ahorros?userId=`            | Crea un movimiento (`name`, `quantity`, `type`, `description`, `date`) |
+| PATCH  | `/ahorros/:id`                | Actualiza un movimiento                       |
+| DELETE | `/ahorros/:id`                | Elimina un movimiento                         |
+
+### Deudas 🔒
+
+| Método | Ruta                         | Descripción                                  |
+| ------ | ---------------------------- | -------------------------------------------- |
+| GET    | `/deudas?userId=`            | Lista las deudas del usuario                 |
+| GET    | `/deudas/totales?userId=`    | Suma total de las deudas                     |
+| GET    | `/deudas/:id`                | Detalle de una deuda                         |
+| POST   | `/deudas?userId=`            | Crea una deuda (`name`, `amount`, `description`) |
+| PUT    | `/deudas/:id`                | Actualiza una deuda                          |
+| DELETE | `/deudas/:id`                | Elimina una deuda                            |
+
+### Inversiones 🔒 y Cripto 🔒
+
+`/inversiones` (acciones) y `/cripto` (criptomonedas) exponen los mismos endpoints:
+
+| Método | Ruta                       | Descripción                                   |
+| ------ | -------------------------- | --------------------------------------------- |
+| GET    | `/{recurso}?userId=`       | Lista las inversiones del usuario             |
+| POST   | `/{recurso}?userId=`       | Crea una inversión (`name`, `symbol`, `hold`, `platform`, `purchaseDate`) |
+| PATCH  | `/{recurso}/:id`           | Actualiza una inversión                       |
+| DELETE | `/{recurso}/:id`           | Elimina una inversión                         |
+
+### Cotizaciones externas
+
+| Método | Ruta                                          | Fuente                                   |
+| ------ | --------------------------------------------- | ---------------------------------------- |
+| GET    | `/externals/iol?symbol=GGAL`                  | Cotización de una acción en BCBA ([InvertirOnline](https://api.invertironline.com)) |
+| GET    | `/externals/cripto_currency?symbols=btc,eth`  | Precios de criptomonedas en USD ([CoinGecko](https://www.coingecko.com/en/api)) |
+| GET    | `/externals/dolar_exchange`                   | Cotizaciones del dólar ([monedapi.ar](https://monedapi.ar)) |
+
+El token de InvertirOnline se obtiene y renueva automáticamente (`IolAuthService`).
+
+### Formato de respuesta
+
+Respuesta exitosa:
+
+```json
+{ "status": "success", "success": true, "data": { } }
 ```
 
-## Deployment
+Error (filtro global `HttpExceptionFilter`):
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+```json
+{
+  "status": 401,
+  "success": false,
+  "message": "Token inválido",
+  "path": "/ahorros?userId=1",
+  "timestamp": "2026-01-01T12:00:00.000Z"
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Cómo correrlo
 
-## Resources
+Requisitos: Node.js 20+ y una base MariaDB/MySQL.
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+npm install
+npm run start:dev      # modo desarrollo con recarga, en http://localhost:3000
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Otros scripts:
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```bash
+npm run build          # compila a dist/
+npm run start:prod     # corre la versión compilada
+npm test               # tests unitarios
+npm run test:e2e       # tests end-to-end
+npm run lint           # linter
+```
