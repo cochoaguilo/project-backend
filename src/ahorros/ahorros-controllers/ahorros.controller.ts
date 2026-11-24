@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { CreateAhorroDto } from 'src/ahorros/create-ahorro.dto';
 import { Ahorro } from 'src/ahorros/ahorro.interface';
 import { AhorrosService } from 'src/ahorros/ahorros.service';
@@ -29,14 +29,14 @@ export class AhorrosController {
 
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateAhorroDto: Partial<CreateAhorroDto>): Promise<HttpResponse> {
-    const result = await this.ahorrosService.update(+id, updateAhorroDto);
+  async update(@Param('id', ParseIntPipe) id: number, @UserId() userId: number, @Body() updateAhorroDto: Partial<CreateAhorroDto>): Promise<HttpResponse> {
+    const result = await this.ahorrosService.update(id, userId, updateAhorroDto);
     return buildSuccessResponse(result);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<HttpResponse> {
-    const result = await this.ahorrosService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number, @UserId() userId: number): Promise<HttpResponse> {
+    const result = await this.ahorrosService.remove(id, userId);
     return buildSuccessResponse(result);
   }
 }

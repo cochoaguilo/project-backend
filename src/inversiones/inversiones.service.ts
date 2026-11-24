@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Inversiones } from './inversiones.entity';
 import { CreateInversionesDto } from './create-inversiones.dto';
+import { removeOwned, updateOwned } from 'src/utils/owned-record';
 
 @Injectable()
 export class InversionesService {
@@ -20,12 +21,11 @@ export class InversionesService {
     return this.inversionesRepository.find({ where: { userId } });
   }
 
-  async update(id: number, updateInversionesDto: CreateInversionesDto): Promise<Inversiones | null> {
-    await this.inversionesRepository.update(id, updateInversionesDto);
-    return this.inversionesRepository.findOneBy({ id });
+  update(id: number, userId: number, updateInversionesDto: CreateInversionesDto): Promise<Inversiones> {
+    return updateOwned(this.inversionesRepository, id, userId, updateInversionesDto);
   }
 
-  async remove(id: number) {
-    return this.inversionesRepository.delete(id);
+  remove(id: number, userId: number) {
+    return removeOwned(this.inversionesRepository, id, userId);
   }
 }
