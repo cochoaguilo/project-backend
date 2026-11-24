@@ -13,6 +13,9 @@ services:
       context: .
     environment:
       NODE_ENV: production
+    # Database credentials and secrets, kept out of the image.
+    env_file:
+      - .env.production
     ports:
       - 3000:3000
 
