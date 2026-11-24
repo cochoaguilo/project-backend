@@ -82,6 +82,7 @@ export class AppModule implements NestModule {
         DeudasController,
         CriptoController,
         InversionesController,
+        { path: 'usuarios', method: RequestMethod.GET },
       );
   }
 }
