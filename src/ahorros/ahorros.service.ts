@@ -4,6 +4,7 @@ import { Ahorros } from './ahorros.entity';
 import { Repository } from 'typeorm';
 import { Ahorro } from './ahorro.interface';
 import { CreateAhorroDto } from './create-ahorro.dto';
+import { removeOwned, updateOwned } from 'src/utils/owned-record';
 
 @Injectable()
 export class AhorrosService {
@@ -43,12 +44,11 @@ export class AhorrosService {
     return this.ahorrosRepository.findOneBy({ id });
   } */
 
-  async update(id: number, updateAhorroDto: Partial<CreateAhorroDto>): Promise<Ahorros | null> {
-    await this.ahorrosRepository.update(id, updateAhorroDto);
-    return this.ahorrosRepository.findOneBy({ id });
+  update(id: number, userId: number, updateAhorroDto: Partial<CreateAhorroDto>): Promise<Ahorros> {
+    return updateOwned(this.ahorrosRepository, id, userId, updateAhorroDto);
   }
 
-  async remove(id: number): Promise<void> {
-    await this.ahorrosRepository.delete(id);
+  async remove(id: number, userId: number): Promise<void> {
+    await removeOwned(this.ahorrosRepository, id, userId);
   }
 }

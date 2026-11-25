@@ -4,6 +4,7 @@ import { UpdateCriptoDto } from './dto/update-cripto.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cripto } from './entities/cripto.entity';
+import { removeOwned, updateOwned } from 'src/utils/owned-record';
 
 @Injectable()
 export class CriptoService {
@@ -27,12 +28,11 @@ export class CriptoService {
     return `This action returns a #${id} cripto`;
   } */
 
-  async update(id: number, updateCriptoDto: CreateCriptoDto): Promise<Cripto | null> {
-    await this.criptoRepository.update(id, updateCriptoDto);
-    return this.criptoRepository.findOneBy({ id });
+  update(id: number, userId: number, updateCriptoDto: CreateCriptoDto): Promise<Cripto> {
+    return updateOwned(this.criptoRepository, id, userId, updateCriptoDto);
   }
 
-  async remove(id: number) {
-    return this.criptoRepository.delete(id);
+  remove(id: number, userId: number) {
+    return removeOwned(this.criptoRepository, id, userId);
   }
 }

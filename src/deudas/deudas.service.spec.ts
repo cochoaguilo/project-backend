@@ -64,22 +64,23 @@ describe('DeudasService', () => {
     expect(result).toEqual(rows);
   });
 
-  it('findOne() should return a single deuda', async () => {
-    const row = { id: 2, amount: 75 };
+  it('findOne() only returns a deuda owned by the user', async () => {
+    const row = { id: 2, amount: 75, userId: 1 };
     repository.findOneBy.mockResolvedValue(row);
 
-    const result = await service.findOne(2);
-    expect(repository.findOneBy).toHaveBeenCalledWith({ id: 2 });
+    const result = await service.findOne(2, 1);
+    expect(repository.findOneBy).toHaveBeenCalledWith({ id: 2, userId: 1 });
     expect(result).toEqual(row);
   });
 
-  it('update() should return raw result from update', async () => {
-    const raw = { affected: 1 };
-    repository.update.mockResolvedValue({ raw });
+  it('update() only touches a deuda owned by the user and returns it', async () => {
+    const updated = { id: 3, amount: 200, userId: 1 };
+    repository.update.mockResolvedValue({ affected: 1 });
+    repository.findOneBy.mockResolvedValue(updated);
 
-    const result = await service.update(3, { amount: 200 });
-    expect(repository.update).toHaveBeenCalledWith(3, { amount: 200 });
-    expect(result).toEqual(raw);
+    const result = await service.update(3, 1, { amount: 200 });
+    expect(repository.update).toHaveBeenCalledWith({ id: 3, userId: 1 }, { amount: 200 });
+    expect(result).toEqual(updated);
   });
 
   it('getDeudasTotales() should return sum of amounts', async () => {
@@ -90,11 +91,11 @@ describe('DeudasService', () => {
     expect(result).toBe(500);
   });
 
-  it('remove() should call delete on repository', async () => {
+  it('remove() only deletes a deuda owned by the user', async () => {
     repository.delete.mockResolvedValue({ affected: 1 });
 
-    const result = await service.remove(4);
-    expect(repository.delete).toHaveBeenCalledWith(4);
+    const result = await service.remove(4, 1);
+    expect(repository.delete).toHaveBeenCalledWith({ id: 4, userId: 1 });
     expect(result).toEqual({ affected: 1 });
   });
 });

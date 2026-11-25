@@ -3,6 +3,7 @@ import { Deudas } from './deudas.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeudaDto } from './deudas.dto';
+import { findOwned, removeOwned, updateOwned } from 'src/utils/owned-record';
 
 @Injectable()
 export class DeudasService {
@@ -20,13 +21,12 @@ export class DeudasService {
         return this.deudasRepository.find({ where: { userId } });
     }
 
-    findOne(id: number) {
-        return this.deudasRepository.findOneBy({ id });
+    findOne(id: number, userId: number): Promise<Deudas> {
+        return findOwned(this.deudasRepository, id, userId);
     }
 
-    async update(id: number, updateDeudaDto: any): Promise<Deudas | null> {
-        await this.deudasRepository.update(id, updateDeudaDto);
-        return this.deudasRepository.findOneBy({ id });
+    update(id: number, userId: number, updateDeudaDto: Partial<CreateDeudaDto>): Promise<Deudas> {
+        return updateOwned(this.deudasRepository, id, userId, updateDeudaDto);
     }
 
     async getDeudasTotales(userId: number): Promise<number | null> {        
@@ -34,7 +34,7 @@ export class DeudasService {
         return result;
     }
 
-    remove(id: number) {
-        return this.deudasRepository.delete(id);
+    remove(id: number, userId: number) {
+        return removeOwned(this.deudasRepository, id, userId);
     }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Put, ParseIntPipe } from '@nestjs/common';
 import { DeudasService } from './deudas.service';
 import { CreateDeudaDto } from './deudas.dto';
 import { UserId } from 'src/utils/userdecorator';
@@ -29,22 +29,22 @@ export class DeudasController {
     }
 
     @Get(':id')
-    async findOne(@Param('id') id: string): Promise<HttpResponse> {
-        const result = await this.deudasService.findOne(+id);
+    async findOne(@Param('id', ParseIntPipe) id: number, @UserId() userId: number): Promise<HttpResponse> {
+        const result = await this.deudasService.findOne(id, userId);
         return buildSuccessResponse(result);
     }
 
     
 
     @Put(':id')
-    async update(@Param('id') id: string, @Body() updateDeudaDto: Partial<CreateDeudaDto>): Promise<HttpResponse> {
-        const result = await this.deudasService.update(+id, updateDeudaDto);
+    async update(@Param('id', ParseIntPipe) id: number, @UserId() userId: number, @Body() updateDeudaDto: Partial<CreateDeudaDto>): Promise<HttpResponse> {
+        const result = await this.deudasService.update(id, userId, updateDeudaDto);
         return buildSuccessResponse(result);
     }
 
     @Delete(':id')
-    async remove(@Param('id') id: string): Promise<HttpResponse> {
-        const result = await this.deudasService.remove(+id);
+    async remove(@Param('id', ParseIntPipe) id: number, @UserId() userId: number): Promise<HttpResponse> {
+        const result = await this.deudasService.remove(id, userId);
         return buildSuccessResponse(result);
     }
 }

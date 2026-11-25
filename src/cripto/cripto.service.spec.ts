@@ -7,6 +7,7 @@ type MockRepository = {
   create: jest.Mock;
   save: jest.Mock;
   find: jest.Mock;
+  findOneBy: jest.Mock;
   update: jest.Mock;
   delete: jest.Mock;
 };
@@ -15,6 +16,7 @@ const mockRepository = (): MockRepository => ({
   create: jest.fn(),
   save: jest.fn(),
   find: jest.fn(),
+  findOneBy: jest.fn(),
   update: jest.fn(),
   delete: jest.fn(),
 });
@@ -60,18 +62,19 @@ describe('CriptoService', () => {
     expect(result).toEqual(rows);
   });
 
-  it('update() should call repository.update', async () => {
-    repository.update.mockResolvedValue(undefined);
+  it('update() only touches a record owned by the user', async () => {
+    repository.update.mockResolvedValue({ affected: 1 });
+    repository.findOneBy.mockResolvedValue({ id: 5, userId: 1 });
 
-    await service.update(5, { symbol: 'XRP' } as any);
-    expect(repository.update).toHaveBeenCalledWith(5, { symbol: 'XRP' });
+    await service.update(5, 1, { name: 'X' } as any);
+    expect(repository.update).toHaveBeenCalledWith({ id: 5, userId: 1 }, { name: 'X' });
   });
 
-  it('remove() should call repository.delete', async () => {
+  it('remove() only deletes a record owned by the user', async () => {
     repository.delete.mockResolvedValue({ affected: 1 });
 
-    const result = await service.remove(6);
-    expect(repository.delete).toHaveBeenCalledWith(6);
+    const result = await service.remove(6, 1);
+    expect(repository.delete).toHaveBeenCalledWith({ id: 6, userId: 1 });
     expect(result).toEqual({ affected: 1 });
   });
 });

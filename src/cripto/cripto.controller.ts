@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { CriptoService } from './cripto.service';
 import { CreateCriptoDto } from './dto/create-cripto.dto';
 import { UpdateCriptoDto } from './dto/update-cripto.dto';
@@ -28,14 +28,14 @@ export class CriptoController {
   } */
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateCriptoDto: CreateCriptoDto): Promise<HttpResponse> {
-    const result = await this.criptoService.update(+id, updateCriptoDto);
+  async update(@Param('id', ParseIntPipe) id: number, @UserId() userId: number, @Body() updateCriptoDto: CreateCriptoDto): Promise<HttpResponse> {
+    const result = await this.criptoService.update(id, userId, updateCriptoDto);
     return buildSuccessResponse(result);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<HttpResponse> {
-    const result = await this.criptoService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number, @UserId() userId: number): Promise<HttpResponse> {
+    const result = await this.criptoService.remove(id, userId);
     return buildSuccessResponse(result);
   }
 }

@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { InversionesService } from './inversiones.service';
 import { CreateInversionesDto } from './create-inversiones.dto';
@@ -37,16 +38,17 @@ export class InversionesController {
 
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
+    @UserId() userId: number,
     @Body() updateInversionesDto: CreateInversionesDto,
   ) {
-    const result = await this.inversionesService.update(+id, updateInversionesDto);
+    const result = await this.inversionesService.update(id, userId, updateInversionesDto);
     return buildSuccessResponse(result);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    const result = await this.inversionesService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number, @UserId() userId: number) {
+    const result = await this.inversionesService.remove(id, userId);
     return buildSuccessResponse(result);
   }
 }

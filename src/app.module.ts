@@ -35,7 +35,10 @@ const sslConfig =
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: process.env.NODE_ENV === 'production' ? '.env.production' : '.env',
+    }),
     TypeOrmModule.forRoot({
       type: ((process.env.DB_TYPE || 'mariadb') as any) || 'mariadb',
       host: (process.env.DB_HOST || 'localhost'),
@@ -82,6 +85,7 @@ export class AppModule implements NestModule {
         DeudasController,
         CriptoController,
         InversionesController,
+        { path: 'usuarios', method: RequestMethod.GET },
       );
   }
 }
