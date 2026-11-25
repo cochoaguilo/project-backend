@@ -4,7 +4,7 @@ import { Ahorros } from './ahorros.entity';
 import { Repository } from 'typeorm';
 import { Ahorro } from './ahorro.interface';
 import { CreateAhorroDto } from './create-ahorro.dto';
-import { removeOwned, updateOwned } from 'src/utils/owned-record';
+import { removeOwned, updateOwned } from '../utils/owned-record';
 
 @Injectable()
 export class AhorrosService {

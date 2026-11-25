@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ExternalsController } from './externals.controller';
 import { HttpModule } from '@nestjs/axios';
-import { IolAuthService } from 'src/utils/iolauth.service';
+import { IolAuthService } from '../utils/iolauth.service';
 
 @Module({
   imports: [HttpModule],

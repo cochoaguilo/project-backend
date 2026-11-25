@@ -2,9 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from 
 import { CriptoService } from './cripto.service';
 import { CreateCriptoDto } from './dto/create-cripto.dto';
 import { UpdateCriptoDto } from './dto/update-cripto.dto';
-import { UserId } from 'src/utils/userdecorator';
-import { buildSuccessResponse } from 'src/utils/api-response';
-import { HttpResponse } from 'src/utils/httpresponse.interface';
+import { UserId } from '../utils/userdecorator';
+import { buildSuccessResponse } from '../utils/api-response';
+import { HttpResponse } from '../utils/httpresponse.interface';
 
 @Controller('cripto')
 export class CriptoController {

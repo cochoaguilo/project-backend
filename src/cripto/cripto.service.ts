@@ -4,7 +4,7 @@ import { UpdateCriptoDto } from './dto/update-cripto.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cripto } from './entities/cripto.entity';
-import { removeOwned, updateOwned } from 'src/utils/owned-record';
+import { removeOwned, updateOwned } from '../utils/owned-record';
 
 @Injectable()
 export class CriptoService {

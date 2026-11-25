@@ -1,8 +1,8 @@
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { buildSuccessResponse } from 'src/utils/api-response';
-import { HttpResponse } from 'src/utils/httpresponse.interface';
-import { IolAuthService } from 'src/utils/iolauth.service';
+import { buildSuccessResponse } from '../utils/api-response';
+import { HttpResponse } from '../utils/httpresponse.interface';
+import { IolAuthService } from '../utils/iolauth.service';
 
 @Controller('externals')
 export class ExternalsController {

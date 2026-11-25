@@ -10,9 +10,9 @@ import {
 } from '@nestjs/common';
 import { InversionesService } from './inversiones.service';
 import { CreateInversionesDto } from './create-inversiones.dto';
-import { UserId } from 'src/utils/userdecorator';
+import { UserId } from '../utils/userdecorator';
 
-import { buildSuccessResponse } from 'src/utils/api-response';
+import { buildSuccessResponse } from '../utils/api-response';
 
 @Controller('inversiones')
 export class InversionesController {

@@ -1,11 +1,11 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
-import { CreateAhorroDto } from 'src/ahorros/create-ahorro.dto';
-import { Ahorro } from 'src/ahorros/ahorro.interface';
-import { AhorrosService } from 'src/ahorros/ahorros.service';
+import { CreateAhorroDto } from '../create-ahorro.dto';
+import { Ahorro } from '../ahorro.interface';
+import { AhorrosService } from '../ahorros.service';
 import { Ahorros } from '../ahorros.entity';
-import { UserId } from 'src/utils/userdecorator';
-import { buildSuccessResponse } from 'src/utils/api-response';
-import { HttpResponse } from 'src/utils/httpresponse.interface';
+import { UserId } from '../../utils/userdecorator';
+import { buildSuccessResponse } from '../../utils/api-response';
+import { HttpResponse } from '../../utils/httpresponse.interface';
 
 @Controller('ahorros')
 export class AhorrosController {

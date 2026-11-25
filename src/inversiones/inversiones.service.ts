@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Inversiones } from './inversiones.entity';
 import { CreateInversionesDto } from './create-inversiones.dto';
-import { removeOwned, updateOwned } from 'src/utils/owned-record';
+import { removeOwned, updateOwned } from '../utils/owned-record';
 
 @Injectable()
 export class InversionesService {

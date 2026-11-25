@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Put, ParseIntPipe } from '@nestjs/common';
 import { DeudasService } from './deudas.service';
 import { CreateDeudaDto } from './deudas.dto';
-import { UserId } from 'src/utils/userdecorator';
-import { buildSuccessResponse } from 'src/utils/api-response';
-import { HttpResponse } from 'src/utils/httpresponse.interface';
+import { UserId } from '../utils/userdecorator';
+import { buildSuccessResponse } from '../utils/api-response';
+import { HttpResponse } from '../utils/httpresponse.interface';
 
 
 @Controller('deudas')

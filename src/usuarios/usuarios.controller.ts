@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get, UnauthorizedException } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto, LoginUsuarioDto } from './usuarios.dto';
-import { buildSuccessResponse } from 'src/utils/api-response';
+import { buildSuccessResponse } from '../utils/api-response';
 
 @Controller('usuarios')
 export class UsuariosController {

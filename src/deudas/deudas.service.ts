@@ -3,7 +3,7 @@ import { Deudas } from './deudas.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeudaDto } from './deudas.dto';
-import { findOwned, removeOwned, updateOwned } from 'src/utils/owned-record';
+import { findOwned, removeOwned, updateOwned } from '../utils/owned-record';
 
 @Injectable()
 export class DeudasService {
