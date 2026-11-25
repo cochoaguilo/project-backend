@@ -40,12 +40,13 @@ const sslConfig =
       envFilePath: process.env.NODE_ENV === 'production' ? '.env.production' : '.env',
     }),
     TypeOrmModule.forRoot({
-      type: ((process.env.DB_TYPE || 'mariadb') as any) || 'mariadb',
-      host: (process.env.DB_HOST || 'localhost'),
-      port: Number((process.env.DB_PORT || '3306')),
-      username: (process.env.DB_USERNAME || 'root'),
-      password: (process.env.DB_PASSWORD || 'marcosdb'),
-      database: (process.env.DB_NAME || 'wallet'),
+      type: 'postgres',
+      // Credentials must come from the environment (.env / .env.production / hosting settings).
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT || '5432'),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME || 'postgres',
       entities: [],
       autoLoadEntities: true,
       synchronize: process.env.DB_SYNCHRONIZE === 'true',
@@ -53,7 +54,7 @@ const sslConfig =
     rejectUnauthorized: false,
   },
       extra: {
-        connectionLimit: 10,
+        max: 10, // pg pool size
       },
     }),
     JwtModule.register({
